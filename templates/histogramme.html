@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histogramme météo Paris</title>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body style="background:#0f172a; color:white; text-align:center; font-family:Arial;">
+    <h1>Histogramme météo de Paris</h1>
+    <div id="chart_div" style="width:1000px; height:500px; margin:auto;"></div>
+
+    <script id="chart-data" type="application/json">
+        {{ chart_rows | tojson | safe }}
+    </script>
+
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            const rows = JSON.parse(document.getElementById('chart-data').textContent);
+
+            const dataArray = [['Date', 'Température max (°C)']].concat(rows);
+            const data = google.visualization.arrayToDataTable(dataArray);
+
+            const options = {
+                title: 'Prévisions météo de Paris sur 7 jours',
+                backgroundColor: '#0f172a',
+                legend: { position: 'none' },
+                colors: ['#38bdf8'],
+                titleTextStyle: {
+                    color: 'white',
+                    fontSize: 20,
+                    bold: true
+                },
+                hAxis: {
+                    title: 'Date',
+                    titleTextStyle: { color: 'white' },
+                    textStyle: { color: 'white' },
+                    slantedText: true,
+                    slantedTextAngle: 45
+                },
+                vAxis: {
+                    title: 'Température (°C)',
+                    titleTextStyle: { color: 'white' },
+                    textStyle: { color: 'white' },
+                    gridlines: { color: '#334155' }
+                },
+                chartArea: {
+                    left: 80,
+                    top: 70,
+                    width: '75%',
+                    height: '65%'
+                }
+            };
+
+            const chart = new google.visualization.ColumnChart(
+                document.getElementById('chart_div')
+            );
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+</html>

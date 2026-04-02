@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier - Vent Marseille</title>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body style="background:#0f172a; color:white; text-align:center; font-family:Arial;">
+    <h1>Vitesse du vent à Marseille</h1>
+    <div id="chart_div" style="margin:auto; width:500px; height:400px;"></div>
+    <p>Mesure actuelle récupérée depuis Open-Meteo</p>
+
+    <script id="wind-data" type="application/json">
+        {{ wind | tojson | safe }}
+    </script>
+
+    <script>
+        google.charts.load('current', { packages: ['gauge'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            const wind = JSON.parse(document.getElementById('wind-data').textContent);
+
+            const data = google.visualization.arrayToDataTable([
+                ['Label', 'Value'],
+                ['Vent km/h', wind]
+            ]);
+
+            const options = {
+                width: 500,
+                height: 400,
+                redFrom: 50,
+                redTo: 100,
+                yellowFrom: 25,
+                yellowTo: 50,
+                greenFrom: 0,
+                greenTo: 25,
+                minorTicks: 5,
+                max: 100
+            };
+
+            const chart = new google.visualization.Gauge(
+                document.getElementById('chart_div')
+            );
+
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+</html>
